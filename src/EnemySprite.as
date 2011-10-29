@@ -9,6 +9,7 @@ package
     private var originalPosition:FlxPoint;
     private var sinAmt:Number = 0;
     private var sinOffset:Number = 0;
+    private var sinMod:Number = 0;
 
     private var horizMove:Boolean = true;
 
@@ -33,6 +34,7 @@ package
       exists = true;
       originalPosition = new FlxPoint(x,y);
       play("flap");
+      sinMod = Math.random() * 2 * Math.PI;
 
 //      if(Math.random() > 0.5)
 //        horizMove = !horizMove;
@@ -40,7 +42,7 @@ package
 
     override public function update():void {
       sinAmt += FlxG.elapsed;
-      sinOffset = Math.sin(sinAmt)*30;
+      sinOffset = Math.sin(sinAmt+sinMod)*30;
 
       if(velocity.x > 0)
         facing = RIGHT;

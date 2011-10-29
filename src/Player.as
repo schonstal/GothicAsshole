@@ -45,6 +45,13 @@ package
       else
         acceleration.y = _gravity;
 
+      
+      if(x < -width) {
+        x = FlxG.camera.width;
+      } else if (x > FlxG.camera.width + width) {
+        x = -width;
+      }
+
       super.update();
     }
 
