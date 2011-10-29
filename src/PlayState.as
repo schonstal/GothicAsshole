@@ -28,7 +28,7 @@ package
 
       var enemy:EnemySprite;
       enemies = new FlxGroup();
-      for(var i:Number = 1; i < 3; i++) {
+      for(var i:Number = 1; i < 30; i++) {
         enemy = new EnemySprite(Math.random() * FlxG.camera.width, (Math.random() * (FlxG.camera.height - CLEAR_AREA)) + CLEAR_AREA - SpikeSprite.HEIGHT);
         enemies.add(enemy);
       }
