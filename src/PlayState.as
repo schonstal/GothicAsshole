@@ -10,6 +10,7 @@ package
     public var enemies:FlxGroup;
 
     private var _scoreText:FlxText;
+    private var _highScoreText:FlxText;
 
     override public function create():void {
       FlxG.worldBounds = new FlxRect(0,0,400,900);
@@ -31,11 +32,19 @@ package
       }
       add(enemies);
 
-      _scoreText = new FlxText(0,16,FlxG.width, GameTracker.score );
-      _scoreText.alignment = "center";
-      _scoreText.setFormat("ack");
+      GameTracker.score = 0;
+
+      _scoreText = new FlxText(0,16,FlxG.width, GameTracker.score.toString());
+      _scoreText.alignment = "left";
+      _scoreText.setFormat("adore");
       _scoreText.scrollFactor.x = _scoreText.scrollFactor.y = 0;
       add(_scoreText);
+
+      _highScoreText = new FlxText(0,16,FlxG.width, GameTracker.highScore.toString());
+      _highScoreText.alignment = "right";
+      _highScoreText.setFormat("adore");
+      _highScoreText.scrollFactor.x = _highScoreText.scrollFactor.y = 0;
+      add(_highScoreText);
 
       FlxG.visualDebug = true;
     }
@@ -49,8 +58,12 @@ package
         if(enemy.touching|FlxObject.UP && player.velocity.y > 0) {
           enemy.exists = false;
           player.bounce();;
+          GameTracker.score++;
         }
       });
+
+      _scoreText.text = GameTracker.score.toString();
+      _highScoreText.text = GameTracker.highScore.toString();
 
       super.update();
     }
