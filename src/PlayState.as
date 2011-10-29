@@ -48,7 +48,7 @@ package
       _highScoreText.scrollFactor.x = _highScoreText.scrollFactor.y = 0;
       add(_highScoreText);
 
-      FlxG.visualDebug = true;
+//      FlxG.visualDebug = true;
     }
 
     override public function update():void {
@@ -60,7 +60,6 @@ package
         if(enemy.touching|FlxObject.UP && player.velocity.y > 0) {
           enemy.exists = false;
           player.bounce();
-          GameTracker.score++;
 
           var emitter:FlxEmitter = new FlxEmitter();
           //Use recycling here later, this might get pretty slow
