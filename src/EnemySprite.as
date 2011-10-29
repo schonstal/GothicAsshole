@@ -17,7 +17,11 @@ package
       super(X,Y);
       immovable = true;
       loadGraphic(ImgEnemy, true, true, 20, 16);
-      height = 8;
+      height = 6;
+      width = 12;
+
+      offset.x = 5;
+      offset.y = 6;
 
       var flapFrames:Array = [0,1,2,3,4,5];
       addAnimation("flap", flapFrames, 15);

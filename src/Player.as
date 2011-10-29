@@ -12,15 +12,19 @@ package
 
     public function Player(X:Number,Y:Number):void {
       super(X,Y);
-      loadGraphic(ImgPlayer, true, true, 16, 20);
+      loadGraphic(ImgPlayer, true, true, 32, 32);
 
-      width = 16;
-      height = 10;
-      offset.y = 10;
+      width = 13;
+      height = 20;
+      offset.y = 11;
+      offset.x = 10;
 
       _speed = new FlxPoint();
       _speed.y = 500;
       _speed.x = 500;
+
+      addAnimation("normal", [0]);
+      addAnimation("bloody", [1]);
 
       acceleration.y = _gravity;
 

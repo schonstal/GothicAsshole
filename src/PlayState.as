@@ -67,21 +67,23 @@ package
         if(enemy.touching|FlxObject.UP && player.velocity.y > 0) {
           enemy.exists = false;
           player.bounce();
+          player.play("bloody");
 
           var emitter:FlxEmitter = new FlxEmitter();
           //Use recycling here later, this might get pretty slow
-          for(var i:int = 0; i < 10; i++) {
+          for(var i:int = 0; i < 5; i++) {
             var p:GibParticle = new GibParticle();
             p.trailCallback = trailCallbackGenerator();
             p.follow(player);
             emitter.add(p);
           }
           emitter.bounce = 1;
-          emitter.gravity = GRAVITY;
+//          emitter.gravity = GRAVITY;
+          emitter.particleDrag = new FlxPoint(50,50);
           emitter.at(enemy);
           _emitters.add(emitter);
           emitter.start();
-          emitter.setYSpeed(-400, -200);
+          emitter.setYSpeed(-100, 100);
         }
       });
 
@@ -96,7 +98,7 @@ package
       add(bloodTrail);
 
       var trailTimer:Number = 0;
-      var trailThreshold:Number = 0.1;
+      var trailThreshold:Number = 0.05;
 
       return function(X:Number, Y:Number):void {
         trailTimer += FlxG.elapsed;
