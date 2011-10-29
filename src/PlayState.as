@@ -11,6 +11,7 @@ package
     public var spikes:FlxGroup;
 
     private var _emitters:FlxGroup;
+    private var arrow:ArrowSprite;
 
     private var _scoreText:FlxText;
     private var _highScoreText:FlxText;
@@ -23,6 +24,9 @@ package
     override public function create():void {
       player = new Player(15,15);
       add(player);
+
+      arrow = new ArrowSprite(player);
+      add(arrow);
 
       ground = new FlxObject(0, FlxG.camera.height, FlxG.camera.width, 100);
       ground.immovable = true;
