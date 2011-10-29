@@ -6,7 +6,7 @@ package
   {
     [Embed(source='../data/player.png')] private var ImgPlayer:Class;
     private var _speed:FlxPoint;
-    private var _gravity:Number = 800; 
+    private var _gravity:Number = 600; 
 
     private var collisionFlags:uint = 0;
 
@@ -19,7 +19,7 @@ package
       offset.y = 10;
 
       _speed = new FlxPoint();
-      _speed.y = 400;
+      _speed.y = 300;
       _speed.x = 500;
 
       acceleration.y = _gravity;
@@ -41,7 +41,7 @@ package
       }
 
       if(!(FlxG.keys.W || FlxG.keys.SPACE || FlxG.keys.UP) && velocity.y < 0)
-        acceleration.y = _gravity * 3;
+        acceleration.y = _gravity * 2;
       else
         acceleration.y = _gravity;
 
