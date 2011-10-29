@@ -12,5 +12,12 @@ package
       loadGraphic(ImgEnemy, true, true, 16, 16);
       height = 8;
     }
+
+    //In case you need to recycle
+    public function create(X:Number, Y:Number):void {
+      x = X;
+      y = Y;
+      exists = true;
+    }
   }
 }
