@@ -40,9 +40,8 @@ package
       FlxG.overlap(player, enemies, function(player:Player, enemy:EnemySprite):void {
         if(enemy.touching|FlxObject.UP && player.velocity.y > 0) {
           enemy.exists = false;
-          player.velocity.y = -600;
+          player.bounce();;
         }
-        //do the bouncy bounce
       });
 
       super.update();

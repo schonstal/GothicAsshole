@@ -19,7 +19,7 @@ package
       offset.y = 10;
 
       _speed = new FlxPoint();
-      _speed.y = 300;
+      _speed.y = 500;
       _speed.x = 500;
 
       acceleration.y = _gravity;
@@ -46,6 +46,10 @@ package
         acceleration.y = _gravity;
 
       super.update();
+    }
+
+    public function bounce():void {
+      velocity.y = -_speed.y;
     }
   }
 }

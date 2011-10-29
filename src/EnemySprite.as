@@ -6,11 +6,24 @@ package
   {
     [Embed(source='../data/enemy.png')] private var ImgEnemy:Class;
 
+    private var originalPosition:FlxPoint;
+    private var sinAmt:Number = 0;
+    private var sinOffset:Number = 0;
+
+    private var horizMove:Boolean = true;
+
     public function EnemySprite(X:Number, Y:Number):void {
       super(X,Y);
       immovable = true;
-      loadGraphic(ImgEnemy, true, true, 16, 16);
+      loadGraphic(ImgEnemy, true, true, 20, 16);
       height = 8;
+
+      var flapFrames:Array = [0,1,2,3,4,5];
+      addAnimation("flap", flapFrames, 15);
+      
+      facing = RIGHT;
+
+      create(X,Y);
     }
 
     //In case you need to recycle
@@ -18,6 +31,28 @@ package
       x = X;
       y = Y;
       exists = true;
+      originalPosition = new FlxPoint(x,y);
+      play("flap");
+
+//      if(Math.random() > 0.5)
+//        horizMove = !horizMove;
+    }
+
+    override public function update():void {
+      sinAmt += FlxG.elapsed;
+      sinOffset = Math.sin(sinAmt)*30;
+
+      if(velocity.x > 0)
+        facing = RIGHT;
+      else
+        facing = LEFT;
+
+      if(horizMove)
+        velocity.x = sinOffset;
+      else
+        velocity.y = sinOffset;
+
+      super.update();
     }
   }
 }
