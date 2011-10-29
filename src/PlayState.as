@@ -66,6 +66,7 @@ package
           //Use recycling here later, this might get pretty slow
           for(var i:int = 0; i < 10; i++) {
             var p:GibParticle = new GibParticle();
+            p.follow(player);
             emitter.add(p);
           }
           emitter.bounce = 1;
