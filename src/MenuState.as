@@ -12,6 +12,9 @@ package
     }
 
     override public function update():void {
+      if(!GameTracker.api)
+          (GameTracker.api = FlxG.stage.addChild(new KongApi()) as KongApi).init();
+
       super.update();
     }
   }
