@@ -12,6 +12,8 @@ package
     private var _scoreText:FlxText;
     private var _highScoreText:FlxText;
 
+    public static const GRAVITY:Number = 600;
+
     override public function create():void {
       FlxG.worldBounds = new FlxRect(0,0,400,900);
       player = new Player(15,15);
@@ -57,8 +59,21 @@ package
       FlxG.overlap(player, enemies, function(player:Player, enemy:EnemySprite):void {
         if(enemy.touching|FlxObject.UP && player.velocity.y > 0) {
           enemy.exists = false;
-          player.bounce();;
+          player.bounce();
           GameTracker.score++;
+
+          var emitter:FlxEmitter = new FlxEmitter();
+          //Use recycling here later, this might get pretty slow
+          for(var i:int = 0; i < 10; i++) {
+            var p:GibParticle = new GibParticle();
+            emitter.add(p);
+          }
+          emitter.bounce = 1;
+          emitter.gravity = GRAVITY;
+          emitter.at(enemy);
+          add(emitter);
+          emitter.start();
+          emitter.setYSpeed(-400, -200);
         }
       });
 

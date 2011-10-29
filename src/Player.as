@@ -6,7 +6,7 @@ package
   {
     [Embed(source='../data/player.png')] private var ImgPlayer:Class;
     private var _speed:FlxPoint;
-    private var _gravity:Number = 600; 
+    private var _gravity:Number = PlayState.GRAVITY; 
 
     private var collisionFlags:uint = 0;
 
