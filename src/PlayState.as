@@ -37,7 +37,7 @@ package
       var spike:SpikeSprite;
       spikes = new FlxGroup();
       for(i = 0; i < FlxG.camera.width/SpikeSprite.WIDTH; i++) {
-        spike = new SpikeSprite(20*i, FlxG.camera.height - SpikeSprite.HEIGHT);
+        spike = new SpikeSprite(20*i, FlxG.camera.height - SpikeSprite.HEIGHT + Math.random()*4);
         spikes.add(spike);
       }
       add(spikes);
