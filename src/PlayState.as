@@ -14,9 +14,11 @@ package
 
     private var _scoreText:FlxText;
     private var _highScoreText:FlxText;
+    public var bats:Number = 5;
 
     public static const GRAVITY:Number = 600;
     public static const CLEAR_AREA:Number = 100;
+    public static const SPIKE_VARIANCE:Number = 6;
 
     override public function create():void {
       player = new Player(15,15);
@@ -28,7 +30,7 @@ package
 
       var enemy:EnemySprite;
       enemies = new FlxGroup();
-      for(var i:Number = 1; i < 30; i++) {
+      for(var i:Number = 1; i <= bats; i++) {
         enemy = new EnemySprite(Math.random() * FlxG.camera.width, (Math.random() * (FlxG.camera.height - CLEAR_AREA)) + CLEAR_AREA - SpikeSprite.HEIGHT);
         enemies.add(enemy);
       }
@@ -37,7 +39,7 @@ package
       var spike:SpikeSprite;
       spikes = new FlxGroup();
       for(i = 0; i < FlxG.camera.width/SpikeSprite.WIDTH; i++) {
-        spike = new SpikeSprite(20*i, FlxG.camera.height - SpikeSprite.HEIGHT + Math.random()*4);
+        spike = new SpikeSprite(20*i, FlxG.camera.height - SpikeSprite.HEIGHT + Math.random()*SPIKE_VARIANCE);
         spikes.add(spike);
       }
       add(spikes);
@@ -87,7 +89,9 @@ package
       });
 
       FlxG.overlap(_emitters, spikes, function(emitter:GibParticle, spike:SpikeSprite):void {
-        spike.play("bloody");
+        if(spike.solid)
+          spike.play("bloody");
+        spike.bloody = true;
       });
 
       FlxG.collide(_emitters, ground);
@@ -97,6 +101,10 @@ package
           enemy.exists = false;
           player.bounce();
           player.play("bloody");
+          
+          bats--;
+          if(bats <= 0)
+            win();
 
           var emitter:FlxEmitter = new FlxEmitter();
           //Use recycling here later, this might get pretty slow
@@ -119,6 +127,16 @@ package
       _highScoreText.text = GameTracker.highScore.toString();
 
       super.update();
+    }
+
+    public function win():void {
+      FlxG.timeScale = 0.1;
+      FlxG.flash(0xffffffff, 0.2, function():void {
+        FlxG.timeScale = 1;
+        for each(var spike:SpikeSprite in spikes.members) {
+          spike.retract();
+        }
+      });
     }
 
     public function trailCallbackGenerator():Function {
