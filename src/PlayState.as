@@ -9,6 +9,8 @@ package
     public var ground:FlxObject;
     public var enemies:FlxGroup;
 
+    private var _scoreText:FlxText;
+
     override public function create():void {
       FlxG.worldBounds = new FlxRect(0,0,400,900);
       player = new Player(15,15);
@@ -29,7 +31,13 @@ package
       }
       add(enemies);
 
-      //FlxG.visualDebug = true;
+      _scoreText = new FlxText(0,16,FlxG.width, GameTracker.score );
+      _scoreText.alignment = "center";
+      _scoreText.setFormat("ack");
+      _scoreText.scrollFactor.x = _scoreText.scrollFactor.y = 0;
+      add(_scoreText);
+
+      FlxG.visualDebug = true;
     }
 
     override public function update():void {
