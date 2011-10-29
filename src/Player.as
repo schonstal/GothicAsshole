@@ -6,7 +6,7 @@ package
   {
     [Embed(source='../data/player.png')] private var ImgPlayer:Class;
     private var _speed:FlxPoint;
-    private var _gravity:Number = 800; 
+    private var _gravity:Number = PlayState.GRAVITY; 
 
     private var collisionFlags:uint = 0;
 
@@ -19,7 +19,7 @@ package
       offset.y = 10;
 
       _speed = new FlxPoint();
-      _speed.y = 400;
+      _speed.y = 500;
       _speed.x = 500;
 
       acceleration.y = _gravity;
@@ -41,11 +41,26 @@ package
       }
 
       if(!(FlxG.keys.W || FlxG.keys.SPACE || FlxG.keys.UP) && velocity.y < 0)
-        acceleration.y = _gravity * 3;
+        acceleration.y = _gravity * 2;
       else
         acceleration.y = _gravity;
 
+      
+      if(x < -width) {
+        x = FlxG.camera.width;
+      } else if (x > FlxG.camera.width + width) {
+        x = -width;
+      }
+
       super.update();
+    }
+
+    public function die():void {
+      exists = false;
+    }
+
+    public function bounce():void {
+      velocity.y = -_speed.y;
     }
   }
 }
