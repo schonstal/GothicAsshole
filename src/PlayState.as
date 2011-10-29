@@ -8,6 +8,7 @@ package
 
     public var ground:FlxObject;
     public var enemies:FlxGroup;
+    public var spikes:FlxGroup;
 
     private var _emitters:FlxGroup;
 
@@ -15,26 +16,31 @@ package
     private var _highScoreText:FlxText;
 
     public static const GRAVITY:Number = 600;
+    public static const CLEAR_AREA:Number = 100;
 
     override public function create():void {
-      FlxG.worldBounds = new FlxRect(0,0,400,900);
       player = new Player(15,15);
       add(player);
 
-      FlxG.camera.bounds = FlxG.worldBounds;
-      FlxG.camera.follow(player);
-
-      ground = new FlxObject(0, FlxG.worldBounds.height-100, FlxG.camera.width, 100);
+      ground = new FlxObject(0, FlxG.camera.height, FlxG.camera.width, 100);
       ground.immovable = true;
       add(ground);
 
       var enemy:EnemySprite;
       enemies = new FlxGroup();
-      for(var i:Number = 1; i < 50; i++) {
-        enemy = new EnemySprite(Math.random() * FlxG.camera.width, Math.random() * FlxG.worldBounds.height-100);
+      for(var i:Number = 1; i < 3; i++) {
+        enemy = new EnemySprite(Math.random() * FlxG.camera.width, (Math.random() * (FlxG.camera.height - CLEAR_AREA)) + CLEAR_AREA - SpikeSprite.HEIGHT);
         enemies.add(enemy);
       }
       add(enemies);
+
+      var spike:SpikeSprite;
+      spikes = new FlxGroup();
+      for(i = 0; i < FlxG.camera.width/SpikeSprite.WIDTH; i++) {
+        spike = new SpikeSprite(20*i, FlxG.camera.height - SpikeSprite.HEIGHT);
+        spikes.add(spike);
+      }
+      add(spikes);
 
       _emitters = new FlxGroup();
       add(_emitters);
@@ -57,11 +63,34 @@ package
     }
 
     override public function update():void {
-      FlxG.collide(player, ground, function(player:Player, ground:FlxObject):void {
+      FlxG.overlap(player, spikes, function(player:Player, spike:SpikeSprite):void {
         var gog:GameOverGroup = new GameOverGroup();
         add(gog);
         player.die();
+        spike.play("bloody");
+
+        var emitter:FlxEmitter = new FlxEmitter();
+        //Use recycling here later, this might get pretty slow
+        for(var i:int = 0; i < 50; i++) {
+          var p:GibParticle = new GibParticle();
+          p.trailCallback = trailCallbackGenerator();
+          emitter.add(p);
+        }
+        emitter.bounce = 0.5;
+        emitter.particleDrag = new FlxPoint(30, 0.2);
+        emitter.gravity = GRAVITY;
+        emitter.at(player);
+        _emitters.add(emitter);
+        emitter.start();
+        emitter.setYSpeed(-400, -100);
+        emitter.setXSpeed(-100, 100);
       });
+
+      FlxG.overlap(_emitters, spikes, function(emitter:GibParticle, spike:SpikeSprite):void {
+        spike.play("bloody");
+      });
+
+      FlxG.collide(_emitters, ground);
 
       FlxG.overlap(player, enemies, function(player:Player, enemy:EnemySprite):void {
         if(enemy.touching|FlxObject.UP && player.velocity.y > 0) {
@@ -77,7 +106,6 @@ package
             p.follow(player);
             emitter.add(p);
           }
-          emitter.bounce = 1;
 //          emitter.gravity = GRAVITY;
           emitter.particleDrag = new FlxPoint(50,50);
           emitter.at(enemy);
