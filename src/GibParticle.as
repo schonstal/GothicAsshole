@@ -5,8 +5,10 @@ package
 
   public class GibParticle extends FlxParticle
   {
-    [Embed(source='../data/gibs.png')] private var ImgGibs:Class;
+    [Embed(source='../data/blood.png')] private var ImgGibs:Class;
     public var onEmitCallback:Function;
+    public var trailCallback:Function;
+
     private var _objectToFollow:FlxSprite;
     private var _angle:Number;
     private var _amplitude:Number;
@@ -18,7 +20,6 @@ package
       loadGraphic(ImgGibs, true, true, 8, 8);
       exists = false;
       antialiasing = false;
-      randomFrame();
     }
 
     public function follow(objectToFollow:FlxSprite):void {
@@ -42,6 +43,9 @@ package
           }
         }
       }
+
+      if(trailCallback != null)
+        trailCallback(x,y);
     }
   }
 }

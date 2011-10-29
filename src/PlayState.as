@@ -72,6 +72,7 @@ package
           //Use recycling here later, this might get pretty slow
           for(var i:int = 0; i < 10; i++) {
             var p:GibParticle = new GibParticle();
+            p.trailCallback = trailCallbackGenerator();
             p.follow(player);
             emitter.add(p);
           }
@@ -88,6 +89,23 @@ package
       _highScoreText.text = GameTracker.highScore.toString();
 
       super.update();
+    }
+
+    public function trailCallbackGenerator():Function {
+      var bloodTrail:FlxGroup = new FlxGroup();
+      add(bloodTrail);
+
+      var trailTimer:Number = 0;
+      var trailThreshold:Number = 0.1;
+
+      return function(X:Number, Y:Number):void {
+        trailTimer += FlxG.elapsed;
+        if(trailTimer > trailThreshold) {
+          var g:GibTrailSprite = bloodTrail.recycle(GibTrailSprite) as GibTrailSprite;
+          g.create(X,Y);
+          trailTimer = 0;
+        }
+      }
     }
   }
 }
