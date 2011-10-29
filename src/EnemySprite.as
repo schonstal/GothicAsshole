@@ -10,6 +10,7 @@ package
       super(X,Y);
       immovable = true;
       loadGraphic(ImgEnemy, true, true, 16, 16);
+      height = 8;
     }
   }
 }

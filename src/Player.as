@@ -15,7 +15,8 @@ package
       loadGraphic(ImgPlayer, true, true, 16, 20);
 
       width = 16;
-      height = 20;
+      height = 10;
+      offset.y = 10;
 
       _speed = new FlxPoint();
       _speed.y = 400;
