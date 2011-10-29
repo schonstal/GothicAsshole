@@ -55,6 +55,10 @@ package
       super.update();
     }
 
+    public function die():void {
+      exists = false;
+    }
+
     public function bounce():void {
       velocity.y = -_speed.y;
     }

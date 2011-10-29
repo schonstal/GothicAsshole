@@ -9,6 +9,8 @@ package
     public var ground:FlxObject;
     public var enemies:FlxGroup;
 
+    private var _emitters:FlxGroup;
+
     private var _scoreText:FlxText;
     private var _highScoreText:FlxText;
 
@@ -34,6 +36,9 @@ package
       }
       add(enemies);
 
+      _emitters = new FlxGroup();
+      add(_emitters);
+
       GameTracker.score = 0;
 
       _scoreText = new FlxText(0,16,FlxG.width, GameTracker.score.toString());
@@ -53,7 +58,9 @@ package
 
     override public function update():void {
       FlxG.collide(player, ground, function(player:Player, ground:FlxObject):void {
-        FlxG.switchState(new PlayState());
+        var gog:GameOverGroup = new GameOverGroup();
+        add(gog);
+        player.die();
       });
 
       FlxG.overlap(player, enemies, function(player:Player, enemy:EnemySprite):void {
@@ -71,7 +78,7 @@ package
           emitter.bounce = 1;
           emitter.gravity = GRAVITY;
           emitter.at(enemy);
-          add(emitter);
+          _emitters.add(emitter);
           emitter.start();
           emitter.setYSpeed(-400, -200);
         }
