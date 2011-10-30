@@ -79,7 +79,8 @@ package
       _highScoreText.scrollFactor.x = _highScoreText.scrollFactor.y = 0;
       add(_highScoreText);
 
-//      FlxG.visualDebug = true;
+      FlxG.debug = true;
+      FlxG.visualDebug = true;
     }
 
     override public function update():void {

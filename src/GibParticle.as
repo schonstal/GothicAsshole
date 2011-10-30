@@ -20,6 +20,9 @@ package
       loadGraphic(ImgGibs, true, true, 8, 8);
       exists = false;
       antialiasing = false;
+
+      width = height = 6;
+      offset.y = offset.x = 1;
     }
 
     public function follow(objectToFollow:FlxSprite):void {
