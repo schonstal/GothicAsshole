@@ -13,10 +13,12 @@ package
     public var bloody:Boolean = false;
 
     public function SpikeSprite(X:Number, Y:Number):void {
-      super(X,Y);
+      super(X,Y+10);
       loadGraphic(ImgGibs, true, true, WIDTH, HEIGHT);
       antialiasing = false;
       immovable = true;
+
+      offset.y = 10;
 
       addAnimation("normal", [0]);
       addAnimation("bloody", [6]);
