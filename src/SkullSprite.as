@@ -66,7 +66,7 @@ package
         play("awake");
       } else {
         sinAmt += FlxG.elapsed;
-        sinOffset = Math.sin(sinAmt+sinMod)*30;
+        sinOffset = Math.sin(sinAmt+sinMod)*20;
         velocity.x = sinOffset;
         velocity.y = 0;
         play("sleeping");

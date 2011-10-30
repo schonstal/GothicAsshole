@@ -31,7 +31,7 @@ package
       acceleration.y = _gravity;
 
       maxVelocity.y = 800;
-      maxVelocity.x = 600;
+      maxVelocity.x = 400;
     }
 
     override public function update():void {
@@ -70,6 +70,7 @@ package
     public function die():void {
       exists = false;
       FlxG.shake(0.005, 0.2);
+      FlxG.level = 1;
     }
 
     public function bounce():void {

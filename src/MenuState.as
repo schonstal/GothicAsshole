@@ -9,6 +9,8 @@ package
       add(button);
 
       FlxG.mouse.show();
+      FlxG.level = 1;
+      GameTracker.score = 0;
     }
 
     override public function update():void {
