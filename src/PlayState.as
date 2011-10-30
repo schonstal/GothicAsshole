@@ -192,26 +192,19 @@ package
 
       FlxG.collide(_emitters, ground);
 
+      if(_sword != null) {
+        FlxG.overlap(_sword, enemies, function(sword:SwordSprite, enemy:EnemySprite):void {
+          killEnemy(enemy, false);
+          sword.play("bloody");
+        });
+      }
+
       FlxG.overlap(player, enemies, function(player:Player, enemy:EnemySprite):void {
         if(enemy.touching|FlxObject.UP && player.velocity.y > 0 && !player.killed) {
-          enemy.exists = false;
           player.bounce();
           player.play("bloody");
-          
+          killEnemy(enemy);    
           _droplets += 5;
-          var emitter:FlxEmitter = new FlxEmitter();
-          //Use recycling here later, this might get pretty slow
-          for(var i:int = 0; i < 5; i++) {
-            var p:GibParticle = new GibParticle();
-            p.trailCallback = trailCallbackGenerator();
-            p.follow(player);
-            emitter.add(p);
-          }
-          emitter.gravity = GRAVITY;
-          emitter.at(enemy);
-          _emitters.add(emitter);
-          emitter.start();
-          emitter.setYSpeed(-300, -200);
         }
       });
 
@@ -219,6 +212,25 @@ package
         win();
 
       super.update();
+    }
+
+    private function killEnemy(enemy:EnemySprite, follow:Boolean = true):void {
+      enemy.exists = false;
+      var emitter:FlxEmitter = new FlxEmitter();
+      //Use recycling here later, this might get pretty slow
+      for(var i:int = 0; i < 5; i++) {
+        var p:GibParticle = new GibParticle();
+        p.trailCallback = trailCallbackGenerator();
+        if(follow)
+          p.follow(player);
+        emitter.add(p);
+      }
+      emitter.particleDrag = new FlxPoint(30, 0.2);
+      emitter.gravity = GRAVITY;
+      emitter.at(enemy);
+      _emitters.add(emitter);
+      emitter.start();
+      emitter.setYSpeed(-300, -200);
     }
 
     public function win():void {
