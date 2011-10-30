@@ -25,13 +25,16 @@ package
     public static const SPIKE_VARIANCE:Number = 6;
 
     override public function create():void {
-      player = new Player(15,15);
+      var bg:BackgroundSprite = new BackgroundSprite();
+      add(bg);
+
+      player = new Player(FlxG.camera.width/2,15);
       add(player);
 
       arrow = new ArrowSprite(player);
       add(arrow);
 
-      ground = new FlxObject(0, FlxG.camera.height, FlxG.camera.width, 100);
+      ground = new FlxObject(-50, FlxG.camera.height, FlxG.camera.width+100, 100);
       ground.immovable = true;
       add(ground);
 

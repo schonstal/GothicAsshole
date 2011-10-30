@@ -16,7 +16,7 @@ package
     public function EnemySprite(X:Number, Y:Number):void {
       super(X,Y);
       immovable = true;
-      loadGraphic(ImgEnemy, true, true, 20, 16);
+      loadGraphic(ImgEnemy, true, true, 22, 18);
       height = 6;
       width = 12;
 

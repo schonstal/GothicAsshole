@@ -49,6 +49,7 @@ package
       } else {
         velocity.x = 0;
         acceleration.x = 0;
+        angularVelocity = 1000;
       }
 
       if(!(FlxG.keys.W || FlxG.keys.SPACE || FlxG.keys.UP) && velocity.y < 0)
