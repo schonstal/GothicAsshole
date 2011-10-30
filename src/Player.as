@@ -19,6 +19,8 @@ package
 
     public var dieCallback:Function;
 
+    public var hasTouchedBrick:Boolean = false;
+
     private var _bloodStr:String = "";
     private var _dirStr:String = "";
     private var _jumpControl:Boolean = false;
@@ -118,7 +120,7 @@ package
         if(_afterJumpTimer < _afterJumpThreshold) {
           _jumpControl = true;
         }
-        if(grounded && !dead) {
+        if(grounded && !dead && !enterDoor) {
           _jumpControl = true;
           velocity.y = -150;
         }
@@ -132,10 +134,10 @@ package
       }
       
       if(!killed && !dead) {
-        if(FlxG.keys.A || FlxG.keys.LEFT && _canMove) {
+        if((FlxG.keys.A || FlxG.keys.LEFT) && _canMove) {
           _looking = LEFT;
           acceleration.x = -_speed.x * (velocity.x > 0 ? 4 : 1);
-        } else if(FlxG.keys.D || FlxG.keys.RIGHT && _canMove) {
+        } else if((FlxG.keys.D || FlxG.keys.RIGHT) && _canMove) {
           acceleration.x = _speed.x * (velocity.x < 0 ? 4 : 1);
           _looking = RIGHT;
         } else if (Math.abs(velocity.x) < 50) {

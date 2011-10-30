@@ -114,6 +114,8 @@ package
       add(arrow);
 
       add(GameTracker.transitionSprite);
+
+      //VISUAL DEBUG?
 //      FlxG.visualDebug = true;
     }
 
@@ -125,9 +127,14 @@ package
           player.enterDoor = true;
           GameTracker.transitionSprite.create();
         }
+        player.hasTouchedBrick = true;
         player.grounded = true;
       } else {
         player.grounded = false;
+      }
+
+      if(!player.grounded && player.hasTouchedBrick) {
+        _brick.allowCollisions = 0;
       }
 
       if(_sword != null && FlxG.collide(ground, _sword)) {

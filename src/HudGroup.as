@@ -4,7 +4,8 @@ package
 
   public class HudGroup extends FlxGroup
   {
-    private var _vial:VialSprite;
+    public var vial:VialSprite;
+
     private var _scoreText:FlxText;
     private var _levelText:FlxText;
     private var _scoreSprite:FlxSprite;
@@ -14,8 +15,8 @@ package
     public static const SHADOW_COLOR:uint = 0xff000000;
 
     public function HudGroup():void {
-      _vial = new VialSprite();
-      add(_vial);
+      vial = new VialSprite();
+      add(vial);
 
       _scoreSprite = new FlxSprite(5,5);
       _scoreSprite.makeGraphic(16,16,0xffff00ff);
