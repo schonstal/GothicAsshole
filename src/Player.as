@@ -11,6 +11,7 @@ package
     private var collisionFlags:uint = 0;
 
     public var killed:Boolean = false;
+    public var grounded:Boolean = false;
 
     public function Player(X:Number,Y:Number):void {
       super(X,Y);
@@ -27,6 +28,8 @@ package
 
       addAnimation("normal", [0]);
       addAnimation("bloody", [1]);
+      addAnimation("walking", [1,0], 5);
+      addAnimation("door", [1,0], 30)
 
       acceleration.y = _gravity;
 
@@ -35,6 +38,14 @@ package
     }
 
     override public function update():void {
+      if(grounded) {
+        maxVelocity.x = 200;
+        drag.x = 400;
+      } else {
+        maxVelocity.x = 400;
+        drag.x = 0;
+      }
+      
       if(!killed) {
         if(FlxG.keys.A) {
           acceleration.x = -_speed.x * (velocity.x > 0 ? 4 : 1);

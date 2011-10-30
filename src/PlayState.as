@@ -60,7 +60,7 @@ package
 
       var enemy:EnemySprite;
       enemies = new FlxGroup();
-      for(var i:Number = 1; i <= (FlxG.level < 10 ? bats - FlxG.level : 10); i++) {
+      for(var i:Number = 1; i <= bats; i++) {
         enemy = new EnemySprite(Math.random() * (FlxG.camera.width-100)+50, (Math.random() * (FlxG.camera.height - CLEAR_AREA)) + CLEAR_AREA - 40);
         enemies.add(enemy);
       }
@@ -112,6 +112,7 @@ package
           FlxG.level++;
           FlxG.switchState(new PlayState());
         }
+        player.grounded = true;
       }
 
       FlxG.overlap(player, _skulls, function(player:Player, skull:SkullSprite):void {

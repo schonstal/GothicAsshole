@@ -9,6 +9,8 @@ package
     public function DoorSprite():void {
       super(FlxG.camera.width/2-13,FlxG.camera.height-48);
       loadGraphic(ImgDoors, true, true, 36, 48);
+      offset.x = 10;
+      width = 16;
     }
   }
 }
