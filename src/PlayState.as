@@ -22,8 +22,6 @@ package
     private var _ghosts:FlxGroup;
     private var _hud:HudGroup;
 
-    private var _vial:VialSprite;
-
     public var bats:Number = 20;
     
     private var _droplets:Number = 0;
@@ -92,10 +90,8 @@ package
       add(_ghosts);
 
       //HUD
-      _vial = new VialSprite();
-      _vial.vialCallback = function():uint {
-      }
-      add(_vial);
+      _hud = new HudGroup();
+      add(_hud);
 
       arrow = new ArrowSprite(player);
       add(arrow);

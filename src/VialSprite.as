@@ -7,8 +7,6 @@ package
   {
     [Embed(source='../data/vial.png')] private var ImgVials:Class;
 
-    public var vialCallback:Function;
-
     public function VialSprite():void {
       super(FlxG.width-25,5);
       loadGraphic(ImgVials, true, true, 20, 128);
@@ -18,9 +16,7 @@ package
     }
 
     override public function update():void {
-      //Disgusting... or BRILLIANT?!??!
-      frame = 100 - Math.floor(((GameTracker.score-_mostRecentScore)/_dropRequirement)*100) as uint;
-
+      frame = 100 - Math.floor(((GameTracker.score-GameTracker.mostRecentScore)/GameTracker.dropRequirement)*100);
       super.update();
     }
   }
