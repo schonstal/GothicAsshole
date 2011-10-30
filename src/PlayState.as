@@ -47,6 +47,9 @@ package
       player = new Player(FlxG.camera.width/2,15);
       add(player);
 
+      var ghost:GhostSprite = new GhostSprite();
+      add(ghost);
+
       arrow = new ArrowSprite(player);
       add(arrow);
 
@@ -59,7 +62,7 @@ package
       var enemy:EnemySprite;
       enemies = new FlxGroup();
       for(var i:Number = 1; i <= (FlxG.level < 10 ? bats - FlxG.level : 10); i++) {
-        enemy = new EnemySprite(Math.random() * (FlxG.camera.width-100)+50, (Math.random() * (FlxG.camera.height - CLEAR_AREA)) + CLEAR_AREA - SpikeSprite.HEIGHT);
+        enemy = new EnemySprite(Math.random() * (FlxG.camera.width-100)+50, (Math.random() * (FlxG.camera.height - CLEAR_AREA)) + CLEAR_AREA - 40);
         enemies.add(enemy);
       }
       add(enemies);
@@ -70,7 +73,7 @@ package
       var skull:SkullSprite;
       _skulls = new FlxGroup();
       for(i = 0; i < FlxG.level-1; i++) {
-        skull = new SkullSprite(Math.random() * (FlxG.camera.width-100)+50, (Math.random() * (FlxG.camera.height - CLEAR_AREA)) + CLEAR_AREA - SpikeSprite.HEIGHT);
+        skull = new SkullSprite(Math.random() * (FlxG.camera.width-100)+50, (Math.random() * (FlxG.camera.height - CLEAR_AREA)) + CLEAR_AREA - 50);
         _skulls.add(skull);
       }
       add(_skulls);
