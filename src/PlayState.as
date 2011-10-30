@@ -5,6 +5,8 @@ package
 
   public class PlayState extends FlxState
   {
+    [Embed(source='../data/music.swf', symbol='castlestep.wav')] private var CastleStep:Class;
+
     public var player:Player;
 
     public var ground:FlxObject;
@@ -25,6 +27,11 @@ package
     public static const SPIKE_VARIANCE:Number = 6;
 
     override public function create():void {
+      if(!GameTracker.playedMusic) {
+        FlxG.playMusic(CastleStep);
+        GameTracker.playedMusic = true;
+      }
+
       var bg:BackgroundSprite = new BackgroundSprite();
       add(bg);
 
@@ -79,8 +86,7 @@ package
       _highScoreText.scrollFactor.x = _highScoreText.scrollFactor.y = 0;
       add(_highScoreText);
 
-      FlxG.debug = true;
-      FlxG.visualDebug = true;
+//      FlxG.visualDebug = true;
     }
 
     override public function update():void {
