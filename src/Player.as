@@ -12,6 +12,9 @@ package
 
     public var killed:Boolean = false;
     public var grounded:Boolean = false;
+    public var bloody:Boolean = false;
+
+    private var _bloodStr:String = "";
 
     public function Player(X:Number,Y:Number):void {
       super(X,Y);
@@ -28,8 +31,20 @@ package
 
       addAnimation("normal", [0]);
       addAnimation("bloody", [1]);
+
+      addAnimation("standing", [0], 5);
+      addAnimation("standing_bloody", [0], 5);
+
       addAnimation("walking", [1,0], 5);
-      addAnimation("door", [1,0], 30)
+      addAnimation("walking_bloody", [1,0], 5);
+
+      addAnimation("stab_charge_bloody", [0], 10);
+      addAnimation("stab_charge", [0], 10);
+
+      addAnimation("stab_bloody", [0], 10);
+      addAnimation("stab", [0], 10);
+
+      addAnimation("door", [1,0], 30);
 
       acceleration.y = _gravity;
 
@@ -38,9 +53,16 @@ package
     }
 
     override public function update():void {
+      _bloodStr = (bloody ? "" : "_bloody");
+
       if(grounded) {
         maxVelocity.x = 200;
         drag.x = 400;
+        if(Math.abs(velocity.x) > 0) {
+          play("walking" + _bloodStr);
+        } else {
+          play("standing" + _bloodStr);
+        }
       } else {
         maxVelocity.x = 400;
         drag.x = 0;
@@ -86,6 +108,7 @@ package
 
     public function bounce():void {
       velocity.y = -_speed.y;
+      bloody = true;
     }
   }
 }
