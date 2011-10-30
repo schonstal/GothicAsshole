@@ -20,6 +20,8 @@ package
     private var _emitters:FlxGroup;
     private var arrow:ArrowSprite;
 
+    private var _sword:SwordSprite;
+
     private var _skulls:FlxGroup; 
     private var _skullFlames:FlxGroup; 
     private var _ghosts:FlxGroup;
@@ -124,6 +126,10 @@ package
         player.grounded = false;
       }
 
+      if(_sword != null && FlxG.collide(ground, _sword)) {
+        _sword.rest();
+      }
+
       FlxG.overlap(player, _skulls, function(player:Player, skull:SkullSprite):void {
         if(skull.touching|FlxObject.UP && player.velocity.y > 0 && !player.killed) {
           if(!skull.awake) {
@@ -150,7 +156,10 @@ package
         if(!player.dead) {
           var gog:GameOverGroup = new GameOverGroup();
           add(gog);
+          _sword = new SwordSprite(player);
+          add(_sword);
           player.die();
+
           spike.play("bloody");
 
           for each(var skull:SkullSprite in _skulls.members) {

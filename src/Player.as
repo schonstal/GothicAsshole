@@ -129,7 +129,7 @@ package
         _jumpPressed = false;
       }
       
-      if(!killed) {
+      if(!killed && !dead) {
         if(FlxG.keys.A || FlxG.keys.LEFT && _canMove) {
           _looking = LEFT;
           acceleration.x = -_speed.x * (velocity.x > 0 ? 4 : 1);
@@ -142,7 +142,7 @@ package
         } else {
           acceleration.x = 0;
         }
-      } else {
+      } else if(!dead){
         velocity.x = 0;
         acceleration.x = 0;
         angularVelocity = 1000;
