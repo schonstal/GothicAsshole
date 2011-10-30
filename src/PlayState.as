@@ -1,6 +1,7 @@
 package
 {
   import org.flixel.*;
+  import org.flixel.plugin.photonstorm.*;
 
   public class PlayState extends FlxState
   {
@@ -12,6 +13,8 @@ package
 
     private var _emitters:FlxGroup;
     private var arrow:ArrowSprite;
+
+    private var _skulls:FlxGroup; 
 
     private var _scoreText:FlxText;
     private var _highScoreText:FlxText;
@@ -35,10 +38,18 @@ package
       var enemy:EnemySprite;
       enemies = new FlxGroup();
       for(var i:Number = 1; i <= bats; i++) {
-        enemy = new EnemySprite(Math.random() * FlxG.camera.width, (Math.random() * (FlxG.camera.height - CLEAR_AREA)) + CLEAR_AREA - SpikeSprite.HEIGHT);
+        enemy = new EnemySprite(Math.random() * (FlxG.camera.width-100)+50, (Math.random() * (FlxG.camera.height - CLEAR_AREA)) + CLEAR_AREA - SpikeSprite.HEIGHT);
         enemies.add(enemy);
       }
       add(enemies);
+
+      var skull:SkullSprite;
+      _skulls = new FlxGroup();
+      for(i = 0; i <= 1; i++) {
+        skull = new SkullSprite(Math.random() * (FlxG.camera.width-100)+50, (Math.random() * (FlxG.camera.height - CLEAR_AREA)) + CLEAR_AREA - SpikeSprite.HEIGHT);
+        _skulls.add(skull);
+      }
+      add(_skulls);
 
       var spike:SpikeSprite;
       spikes = new FlxGroup();
@@ -69,6 +80,22 @@ package
     }
 
     override public function update():void {
+      FlxG.collide(player, ground);
+
+      FlxG.overlap(player, _skulls, function(player:Player, skull:SkullSprite):void {
+        if(skull.touching|FlxObject.UP && player.velocity.y > 0 && !player.killed) {
+          if(!skull.awake) {
+            skull.wakeUp();
+            skull.moveCallback = function():void {
+              FlxVelocity.moveTowardsObject(skull, player, 50);
+            }
+            player.bounce();
+          }
+        } else if(skull.awake) {
+          player.killed = true;
+        }
+      });
+
       FlxG.overlap(player, spikes, function(player:Player, spike:SpikeSprite):void {
         var gog:GameOverGroup = new GameOverGroup();
         add(gog);
@@ -101,7 +128,7 @@ package
       FlxG.collide(_emitters, ground);
 
       FlxG.overlap(player, enemies, function(player:Player, enemy:EnemySprite):void {
-        if(enemy.touching|FlxObject.UP && player.velocity.y > 0) {
+        if(enemy.touching|FlxObject.UP && player.velocity.y > 0 && !player.killed) {
           enemy.exists = false;
           player.bounce();
           player.play("bloody");
@@ -129,6 +156,9 @@ package
 
       _scoreText.text = GameTracker.score.toString();
       _highScoreText.text = GameTracker.highScore.toString();
+
+//      if(FlxG.keys.P)
+//        win();
 
       super.update();
     }

@@ -10,6 +10,8 @@ package
 
     private var collisionFlags:uint = 0;
 
+    public var killed:Boolean = false;
+
     public function Player(X:Number,Y:Number):void {
       super(X,Y);
       loadGraphic(ImgPlayer, true, true, 32, 32);
@@ -33,14 +35,19 @@ package
     }
 
     override public function update():void {
-      if(FlxG.keys.A) {
-        acceleration.x = -_speed.x * (velocity.x > 0 ? 4 : 1);
-      } else if(FlxG.keys.D) {
-        acceleration.x = _speed.x * (velocity.x < 0 ? 4 : 1);
-      } else if (Math.abs(velocity.x) < 50) {
-        velocity.x = 0;
-        acceleration.x = 0;
+      if(!killed) {
+        if(FlxG.keys.A) {
+          acceleration.x = -_speed.x * (velocity.x > 0 ? 4 : 1);
+        } else if(FlxG.keys.D) {
+          acceleration.x = _speed.x * (velocity.x < 0 ? 4 : 1);
+        } else if (Math.abs(velocity.x) < 50) {
+          velocity.x = 0;
+          acceleration.x = 0;
+        } else {
+          acceleration.x = 0;
+        }
       } else {
+        velocity.x = 0;
         acceleration.x = 0;
       }
 
@@ -61,6 +68,7 @@ package
 
     public function die():void {
       exists = false;
+      FlxG.shake(0.005, 0.2);
     }
 
     public function bounce():void {
