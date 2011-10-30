@@ -8,7 +8,7 @@ package
     private var _alphaRate:Number = 0.2;
 
     public static const WIDTH:Number = 10;
-    public static const HEIGHT:Number = 30;
+    public static const HEIGHT:Number = 31;
 
     public var bloody:Boolean = false;
 
