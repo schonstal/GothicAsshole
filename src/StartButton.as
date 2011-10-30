@@ -18,12 +18,6 @@ package
       addAnimation("off", [0]);
       addAnimation("on", [1]);
 
-      onUp =  function():void { 
-        FlxG.fade(0xff000000,1,function():void {
-          FlxG.switchState(new PlayState());
-        });
-      };
-
       onOver = function():void { play("on"); };
 
       onOut = function():void { play("off"); };

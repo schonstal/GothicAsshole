@@ -15,6 +15,14 @@ package
     public var bloody:Boolean = false;
 
     private var _bloodStr:String = "";
+    private var _jumpControl:Boolean = false;
+    private var _jumpPressed:Boolean = false;
+
+    private var _beforeJumpTimer:Number = 0;
+    private var _beforeJumpThreshold:Number = 0.15;
+
+    private var _afterJumpTimer:Number = 0;
+    private var _afterJumpThreshold:Number = 0.15;
 
     public function Player(X:Number,Y:Number):void {
       super(X,Y);
@@ -67,6 +75,21 @@ package
         maxVelocity.x = 400;
         drag.x = 0;
       }
+
+      if(FlxG.keys.justPressed("W") || FlxG.keys.justPressed("UP")) {
+        _jumpPressed = true;
+        _beforeJumpTimer = 0;
+        if(_afterJumpTimer < _afterJumpThreshold) {
+          _jumpControl = true;
+        }
+      }
+
+      _afterJumpTimer += FlxG.elapsed;
+
+      _beforeJumpTimer += FlxG.elapsed;
+      if(_beforeJumpTimer >= _beforeJumpThreshold) {
+        _jumpPressed = false;
+      }
       
       if(!killed) {
         if(FlxG.keys.A || FlxG.keys.LEFT) {
@@ -85,7 +108,7 @@ package
         angularVelocity = 1000;
       }
 
-      if(!(FlxG.keys.W || FlxG.keys.UP) && velocity.y < 0)
+      if(!((FlxG.keys.W || FlxG.keys.UP) && _jumpControl) && velocity.y < 0)
         acceleration.y = _gravity * 2;
       else
         acceleration.y = _gravity;
@@ -107,8 +130,12 @@ package
     }
 
     public function bounce():void {
+      _jumpControl = false;
       velocity.y = -_speed.y;
       bloody = true;
+      _afterJumpTimer = 0;
+      if(_jumpPressed)
+        _jumpControl = true;
     }
   }
 }

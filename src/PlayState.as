@@ -96,14 +96,15 @@ package
       arrow = new ArrowSprite(player);
       add(arrow);
 
+      add(GameTracker.transitionSprite);
 //      FlxG.visualDebug = true;
     }
 
     override public function update():void {
       if(FlxG.collide(player, ground)) {
-        if(FlxG.overlap(player, door) && _won) {
+        if(FlxG.overlap(player, door) && _won && GameTracker.transitionSprite.done) {
           FlxG.level++;
-          FlxG.switchState(new PlayState());
+          GameTracker.transitionSprite.create();
         }
         player.grounded = true;
       }

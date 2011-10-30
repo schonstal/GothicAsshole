@@ -9,6 +9,8 @@ package
         public var _save:FlxSave;
         public var _playedMusic:Boolean;
 
+        public var _transitionSprite:TransitionSprite;
+
         public var _mostRecentScore:Number;
 
         public var _api:KongApi;
@@ -24,6 +26,7 @@ package
                 _instance._score = 0;
                 instance._save = new FlxSave();
                 instance._save.bind("gothic-asshole");
+                instance._transitionSprite = new TransitionSprite();
 
                 if(_instance._save.data.highScore != null)
                   _instance._highScore = instance._save.data.highScore;
@@ -72,6 +75,14 @@ package
 
         public static function set mostRecentScore(value:Number):void {
             instance._mostRecentScore = value;
+        }
+
+        public static function get transitionSprite():TransitionSprite {
+            return instance._transitionSprite;
+        }
+
+        public static function set transitionSprite(value:TransitionSprite):void {
+            instance._transitionSprite = value;
         }
 
         public static function get dropRequirement():Number {
