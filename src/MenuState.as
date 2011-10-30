@@ -5,8 +5,6 @@ package
   public class MenuState extends FlxState
   {
     override public function create():void {
-//      GameTracker.transitionSprite = new TransitionSprite();
-
       var button:FlxButton = new StartButton(45,202);
       add(button);
 
