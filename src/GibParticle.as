@@ -14,7 +14,7 @@ package
     private var _amplitude:Number;
 
     private var _followTimer:Number = 0;
-    private var _followThreshold:Number = 1;
+    private var _followThreshold:Number = 0.75;
 
     public function GibParticle():void {
       loadGraphic(ImgGibs, true, true, 8, 8);

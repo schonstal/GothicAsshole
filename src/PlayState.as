@@ -12,15 +12,21 @@ package
     public var ground:FlxObject;
     public var enemies:FlxGroup;
     public var spikes:FlxGroup;
+    public var door:DoorSprite;
 
     private var _emitters:FlxGroup;
     private var arrow:ArrowSprite;
 
     private var _skulls:FlxGroup; 
+    private var _skullFlames:FlxGroup; 
 
     private var _scoreText:FlxText;
     private var _highScoreText:FlxText;
-    public var bats:Number = 5;
+    public var bats:Number = 20;
+    
+    private var _droplets:Number = 0;
+    private var _dropRequirement:Number = 45;
+    private var _won:Boolean = false;
 
     public static const GRAVITY:Number = 600;
     public static const CLEAR_AREA:Number = 100;
@@ -35,6 +41,9 @@ package
       var bg:BackgroundSprite = new BackgroundSprite();
       add(bg);
 
+      door = new DoorSprite();
+      add(door);
+
       player = new Player(FlxG.camera.width/2,15);
       add(player);
 
@@ -45,17 +54,22 @@ package
       ground.immovable = true;
       add(ground);
 
+      _dropRequirement += FlxG.level * 5;
+
       var enemy:EnemySprite;
       enemies = new FlxGroup();
-      for(var i:Number = 1; i <= bats; i++) {
+      for(var i:Number = 1; i <= (FlxG.level < 10 ? bats - FlxG.level : 10); i++) {
         enemy = new EnemySprite(Math.random() * (FlxG.camera.width-100)+50, (Math.random() * (FlxG.camera.height - CLEAR_AREA)) + CLEAR_AREA - SpikeSprite.HEIGHT);
         enemies.add(enemy);
       }
       add(enemies);
 
+      _skullFlames = new FlxGroup();
+      add(_skullFlames);
+
       var skull:SkullSprite;
       _skulls = new FlxGroup();
-      for(i = 0; i <= 1; i++) {
+      for(i = 0; i < FlxG.level-1; i++) {
         skull = new SkullSprite(Math.random() * (FlxG.camera.width-100)+50, (Math.random() * (FlxG.camera.height - CLEAR_AREA)) + CLEAR_AREA - SpikeSprite.HEIGHT);
         _skulls.add(skull);
       }
@@ -71,8 +85,6 @@ package
 
       _emitters = new FlxGroup();
       add(_emitters);
-
-      GameTracker.score = 0;
 
       _scoreText = new FlxText(0,16,FlxG.width, GameTracker.score.toString());
       _scoreText.alignment = "left";
@@ -90,7 +102,12 @@ package
     }
 
     override public function update():void {
-      FlxG.collide(player, ground);
+      if(FlxG.collide(player, ground)) {
+        if(FlxG.overlap(player, door) && _won) {
+          FlxG.level++;
+          FlxG.switchState(new PlayState());
+        }
+      }
 
       FlxG.overlap(player, _skulls, function(player:Player, skull:SkullSprite):void {
         if(skull.touching|FlxObject.UP && player.velocity.y > 0 && !player.killed) {
@@ -99,9 +116,13 @@ package
             skull.moveCallback = function():void {
               FlxVelocity.moveTowardsObject(skull, player, 50);
             }
+            skull.poofCallback = function():void {
+              (_skullFlames.recycle(FlameSprite) as FlameSprite).create(skull.x, skull.y);
+            }
             player.bounce();
           }
-        } else if(skull.awake) {
+        }
+        if(skull.awake) {
           player.killed = true;
         }
       });
@@ -111,6 +132,10 @@ package
         add(gog);
         player.die();
         spike.play("bloody");
+
+        for each(var skull:SkullSprite in _skulls.members) {
+          skull.awake = false;
+        }
 
         var emitter:FlxEmitter = new FlxEmitter();
         //Use recycling here later, this might get pretty slow
@@ -143,10 +168,7 @@ package
           player.bounce();
           player.play("bloody");
           
-          bats--;
-          if(bats <= 0)
-            win();
-
+          _droplets += 5;
           var emitter:FlxEmitter = new FlxEmitter();
           //Use recycling here later, this might get pretty slow
           for(var i:int = 0; i < 5; i++) {
@@ -155,25 +177,25 @@ package
             p.follow(player);
             emitter.add(p);
           }
-//          emitter.gravity = GRAVITY;
-          emitter.particleDrag = new FlxPoint(50,50);
+          emitter.gravity = GRAVITY;
           emitter.at(enemy);
           _emitters.add(emitter);
           emitter.start();
-          emitter.setYSpeed(-100, 100);
+          emitter.setYSpeed(-300, -200);
         }
       });
 
+      if(_droplets >= _dropRequirement && !_won)
+        win();
+
       _scoreText.text = GameTracker.score.toString();
       _highScoreText.text = GameTracker.highScore.toString();
-
-//      if(FlxG.keys.P)
-//        win();
 
       super.update();
     }
 
     public function win():void {
+      _won = true;
       FlxG.timeScale = 0.1;
       FlxG.flash(0xffffffff, 0.2, function():void {
         FlxG.timeScale = 1;
