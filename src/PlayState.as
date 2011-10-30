@@ -52,20 +52,11 @@ package
       player = new Player(FlxG.camera.width/2,15);
       add(player);
 
-      arrow = new ArrowSprite(player);
-      add(arrow);
-
       ground = new FlxObject(-50, FlxG.camera.height, FlxG.camera.width+100, 100);
       ground.immovable = true;
       add(ground);
 
       _dropRequirement += FlxG.level * 5;
-
-      _vial = new VialSprite();
-      _vial.vialCallback = function():uint {
-        return 100 - Math.floor(((GameTracker.score-_mostRecentScore)/_dropRequirement)*100) as uint;
-      }
-      add(_vial);
 
       var enemy:EnemySprite;
       enemies = new FlxGroup();
@@ -101,6 +92,16 @@ package
       var ghost:GhostSprite = new GhostSprite();
       _ghosts.add(ghost);
       add(_ghosts);
+
+      //HUD
+      _vial = new VialSprite();
+      _vial.vialCallback = function():uint {
+        return 100 - Math.floor(((GameTracker.score-_mostRecentScore)/_dropRequirement)*100) as uint;
+      }
+      add(_vial);
+
+      arrow = new ArrowSprite(player);
+      add(arrow);
 
 //      FlxG.visualDebug = true;
     }

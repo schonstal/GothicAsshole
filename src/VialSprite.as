@@ -10,7 +10,7 @@ package
     public var vialCallback:Function;
 
     public function VialSprite():void {
-      super(0,0);
+      super(FlxG.width-25,5);
       loadGraphic(ImgVials, true, true, 20, 128);
       antialiasing = false;
 

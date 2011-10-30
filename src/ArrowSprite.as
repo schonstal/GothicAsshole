@@ -8,7 +8,7 @@ package
     private var player:Player;
 
     public function ArrowSprite(p:Player):void {
-      super(0,0);
+      super(0,5);
       loadGraphic(ImgArrow, true, true, 15, 15);
       antialiasing = false;
       visible = false;
