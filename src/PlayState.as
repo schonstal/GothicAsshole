@@ -17,10 +17,11 @@ package
     private var arrow:ArrowSprite;
 
     private var _skulls:FlxGroup; 
+    private var _skullFlames:FlxGroup; 
 
     private var _scoreText:FlxText;
     private var _highScoreText:FlxText;
-    public var bats:Number = 5;
+    public var bats:Number = 50;
 
     public static const GRAVITY:Number = 600;
     public static const CLEAR_AREA:Number = 100;
@@ -52,6 +53,9 @@ package
         enemies.add(enemy);
       }
       add(enemies);
+
+      _skullFlames = new FlxGroup();
+      add(_skullFlames);
 
       var skull:SkullSprite;
       _skulls = new FlxGroup();
@@ -98,6 +102,9 @@ package
             skull.wakeUp();
             skull.moveCallback = function():void {
               FlxVelocity.moveTowardsObject(skull, player, 50);
+            }
+            skull.poofCallback = function():void {
+              (_skullFlames.recycle(FlameSprite) as FlameSprite).create(skull.x, skull.y);
             }
             player.bounce();
           }
@@ -170,9 +177,6 @@ package
 
       _scoreText.text = GameTracker.score.toString();
       _highScoreText.text = GameTracker.highScore.toString();
-
-//      if(FlxG.keys.P)
-//        win();
 
       super.update();
     }

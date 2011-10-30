@@ -8,10 +8,14 @@ package
     [Embed(source='../data/skull.png')] private var ImgSkulls:Class;
     public var awake:Boolean = false;
     public var moveCallback:Function;
+    public var poofCallback:Function;
 
     public var waking:Boolean = false;
     private var _wakeUpTimer:Number = 0;
     private var _wakeUpThreshold:Number = 0.3;
+    
+    private var _poofTimer:Number = 0;
+    private var _poofThreshold:Number = 0.25;
 
     private var sinAmt:Number = 0;
     private var sinOffset:Number = 0;
@@ -54,6 +58,11 @@ package
         moveCallback();
 
       if(awake) {
+        _poofTimer += FlxG.elapsed;
+        if(_poofTimer > _poofThreshold) {
+          if(poofCallback != null) poofCallback();
+          _poofTimer = 0;
+        }
         play("awake");
       } else {
         sinAmt += FlxG.elapsed;
