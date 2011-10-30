@@ -9,6 +9,8 @@ package
         public var _save:FlxSave;
         public var _playedMusic:Boolean;
 
+        public var _mostRecentScore:Number;
+
         public var _api:KongApi;
 
         private static var _instance:GameTracker = null;
@@ -62,6 +64,18 @@ package
 
         public static function set playedMusic(value:Boolean):void {
             instance._playedMusic = value;
+        }
+
+        public static function get mostRecentScore():Number {
+            return instance._mostRecentScore;
+        }
+
+        public static function set mostRecentScore(value:Number):void {
+            instance._mostRecentScore = value;
+        }
+
+        public static function get dropRequirement():Number {
+          return 45 + 5 * FlxG.level;
         }
     }
 }

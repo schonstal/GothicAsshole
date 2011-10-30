@@ -20,13 +20,13 @@ package
     private var _skulls:FlxGroup; 
     private var _skullFlames:FlxGroup; 
     private var _ghosts:FlxGroup;
+    private var _hud:HudGroup;
 
     private var _vial:VialSprite;
 
     public var bats:Number = 20;
     
     private var _droplets:Number = 0;
-    private var _dropRequirement:Number = 45;
     private var _won:Boolean = false;
 
     private var _mostRecentScore:Number = 0;
@@ -41,7 +41,7 @@ package
         GameTracker.playedMusic = true;
       }
 
-      _mostRecentScore = GameTracker.score;
+      GameTracker.mostRecentScore = GameTracker.score;
 
       var bg:BackgroundSprite = new BackgroundSprite();
       add(bg);
@@ -55,8 +55,6 @@ package
       ground = new FlxObject(-50, FlxG.camera.height, FlxG.camera.width+100, 100);
       ground.immovable = true;
       add(ground);
-
-      _dropRequirement += FlxG.level * 5;
 
       var enemy:EnemySprite;
       enemies = new FlxGroup();
@@ -96,7 +94,6 @@ package
       //HUD
       _vial = new VialSprite();
       _vial.vialCallback = function():uint {
-        return 100 - Math.floor(((GameTracker.score-_mostRecentScore)/_dropRequirement)*100) as uint;
       }
       add(_vial);
 
@@ -195,7 +192,7 @@ package
         }
       });
 
-      if(_droplets >= _dropRequirement && !_won)
+      if(_droplets >= GameTracker.dropRequirement && !_won)
         win();
 
       super.update();

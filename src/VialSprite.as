@@ -19,9 +19,8 @@ package
 
     override public function update():void {
       //Disgusting... or BRILLIANT?!??!
-      if(vialCallback != null) {
-        frame = vialCallback();
-      }
+      frame = 100 - Math.floor(((GameTracker.score-_mostRecentScore)/_dropRequirement)*100) as uint;
+
       super.update();
     }
   }
