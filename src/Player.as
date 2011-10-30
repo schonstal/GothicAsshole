@@ -43,7 +43,7 @@ package
       addAnimation("standing", [0], 5);
       addAnimation("standing_bloody", [0], 5);
 
-      addAnimation("walking", [1,0], 5);
+      addAnimation("walking", [2,0], 5);
       addAnimation("walking_bloody", [1,0], 5);
 
       addAnimation("stab_charge_bloody", [0], 10);
@@ -82,6 +82,11 @@ package
         if(_afterJumpTimer < _afterJumpThreshold) {
           _jumpControl = true;
         }
+        if(grounded) {
+          _jumpControl = true;
+          velocity.y = -150;
+          play((bloody?"bloody":"normal"));
+        }
       }
 
       _afterJumpTimer += FlxG.elapsed;
@@ -92,9 +97,9 @@ package
       }
       
       if(!killed) {
-        if(FlxG.keys.A || FlxG.keys.LEFT) {
+        if(FlxG.keys.A || FlxG.keys.LEFT && GameTracker.transitionSprite.done) {
           acceleration.x = -_speed.x * (velocity.x > 0 ? 4 : 1);
-        } else if(FlxG.keys.D || FlxG.keys.RIGHT) {
+        } else if(FlxG.keys.D || FlxG.keys.RIGHT && GameTracker.transitionSprite.done) {
           acceleration.x = _speed.x * (velocity.x < 0 ? 4 : 1);
         } else if (Math.abs(velocity.x) < 50) {
           velocity.x = 0;

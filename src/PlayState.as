@@ -14,6 +14,9 @@ package
     public var spikes:FlxGroup;
     public var door:DoorSprite;
 
+    private var _entrance:DoorSprite;
+    private var _brick:BrickSprite;
+
     private var _emitters:FlxGroup;
     private var arrow:ArrowSprite;
 
@@ -46,6 +49,14 @@ package
 
       door = new DoorSprite();
       add(door);
+
+      _entrance = new DoorSprite();
+      _entrance.x = FlxG.camera.width/2-_entrance.width/2;
+      _entrance.y = 5;
+      add(_entrance);
+
+      _brick = new BrickSprite();
+      add(_brick);
 
       player = new Player(FlxG.camera.width/2,15);
       add(player);
@@ -101,12 +112,14 @@ package
     }
 
     override public function update():void {
-      if(FlxG.collide(player, ground)) {
+      if(FlxG.collide(player, ground) || FlxG.collide(player, _brick)) {
         if(FlxG.overlap(player, door) && _won && GameTracker.transitionSprite.done) {
           FlxG.level++;
           GameTracker.transitionSprite.create();
         }
         player.grounded = true;
+      } else {
+        player.grounded = false;
       }
 
       FlxG.overlap(player, _skulls, function(player:Player, skull:SkullSprite):void {
