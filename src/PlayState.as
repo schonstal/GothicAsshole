@@ -19,14 +19,17 @@ package
 
     private var _skulls:FlxGroup; 
     private var _skullFlames:FlxGroup; 
+    private var _ghosts:FlxGroup;
 
-    private var _scoreText:FlxText;
-    private var _highScoreText:FlxText;
+    private var _vial:VialSprite;
+
     public var bats:Number = 20;
     
     private var _droplets:Number = 0;
     private var _dropRequirement:Number = 45;
     private var _won:Boolean = false;
+
+    private var _mostRecentScore:Number = 0;
 
     public static const GRAVITY:Number = 600;
     public static const CLEAR_AREA:Number = 100;
@@ -38,6 +41,8 @@ package
         GameTracker.playedMusic = true;
       }
 
+      _mostRecentScore = GameTracker.score;
+
       var bg:BackgroundSprite = new BackgroundSprite();
       add(bg);
 
@@ -47,9 +52,6 @@ package
       player = new Player(FlxG.camera.width/2,15);
       add(player);
 
-      var ghost:GhostSprite = new GhostSprite();
-      add(ghost);
-
       arrow = new ArrowSprite(player);
       add(arrow);
 
@@ -58,6 +60,12 @@ package
       add(ground);
 
       _dropRequirement += FlxG.level * 5;
+
+      _vial = new VialSprite();
+      _vial.vialCallback = function():uint {
+        return 100 - Math.floor(((GameTracker.score-_mostRecentScore)/_dropRequirement)*100) as uint;
+      }
+      add(_vial);
 
       var enemy:EnemySprite;
       enemies = new FlxGroup();
@@ -89,17 +97,10 @@ package
       _emitters = new FlxGroup();
       add(_emitters);
 
-      _scoreText = new FlxText(0,16,FlxG.width, GameTracker.score.toString());
-      _scoreText.alignment = "left";
-      _scoreText.setFormat("adore");
-      _scoreText.scrollFactor.x = _scoreText.scrollFactor.y = 0;
-      add(_scoreText);
-
-      _highScoreText = new FlxText(0,16,FlxG.width, GameTracker.highScore.toString());
-      _highScoreText.alignment = "right";
-      _highScoreText.setFormat("adore");
-      _highScoreText.scrollFactor.x = _highScoreText.scrollFactor.y = 0;
-      add(_highScoreText);
+      _ghosts = new FlxGroup;
+      var ghost:GhostSprite = new GhostSprite();
+      _ghosts.add(ghost);
+      add(_ghosts);
 
 //      FlxG.visualDebug = true;
     }
@@ -128,6 +129,10 @@ package
         if(skull.awake) {
           player.killed = true;
         }
+      });
+
+      FlxG.overlap(player, _ghosts, function(p:Player, ghost:GhostSprite):void {
+        p.killed = true;
       });
 
       FlxG.overlap(player, spikes, function(player:Player, spike:SpikeSprite):void {
@@ -190,9 +195,6 @@ package
 
       if(_droplets >= _dropRequirement && !_won)
         win();
-
-      _scoreText.text = GameTracker.score.toString();
-      _highScoreText.text = GameTracker.highScore.toString();
 
       super.update();
     }
