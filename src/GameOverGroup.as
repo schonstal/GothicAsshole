@@ -16,7 +16,7 @@ package
       //Flixel shadow is only 1 pixel :(
       var t:FlxText = new FlxText(0,120,FlxG.width, Math.floor(GameTracker.score).toString());
       t.alignment = "center";
-      t.setFormat("adore");
+      t.setFormat("celtic");
       t.color = 0xff000000;
       t.size = 24;
       t.scrollFactor.x = t.scrollFactor.y = 0;
@@ -24,14 +24,14 @@ package
 
       t = new FlxText(-3,117,FlxG.width, Math.floor(GameTracker.score).toString());
       t.alignment = "center";
-      t.setFormat("adore");
+      t.setFormat("celtic");
       t.size = 24;
       t.scrollFactor.x = t.scrollFactor.y = 0;
       add(t);
 
       t = new FlxText(0,168,FlxG.width, Math.floor(GameTracker.highScore).toString());
       t.alignment = "center";
-      t.setFormat("adore");
+      t.setFormat("celtic");
       t.size = 16;
       t.color = 0xff000000;
       t.scrollFactor.x = t.scrollFactor.y = 0;
@@ -39,7 +39,7 @@ package
 
       t = new FlxText(-2,166,FlxG.width, Math.floor(GameTracker.highScore).toString());
       t.alignment = "center";
-      t.setFormat("adore");
+      t.setFormat("celtic");
       t.size = 16;
       t.scrollFactor.x = t.scrollFactor.y = 0;
       add(t);
@@ -58,6 +58,7 @@ package
       if(FlxG.keys.justPressed("SPACE")) {
         FlxG.fade(0xff000000, 1, function():void {
           FlxG.switchState(new PlayState());
+          GameTracker.score = 0;
         });
       }
 

@@ -5,11 +5,12 @@ package
 
   public class DoorSprite extends FlxSprite
   {
-//    [Embed(source='../data/door.png')] private var ImgDoors:Class;
+    [Embed(source='../data/entranceExit.png')] private var ImgDoors:Class;
     public function DoorSprite():void {
-      super(FlxG.camera.width/2-10,FlxG.camera.height-30);
-//      loadGraphic(ImgDoors, true, true, 20, 30);
-      makeGraphic(20, 30, 0xffff00ff);
+      super(FlxG.camera.width/2-13,FlxG.camera.height-48);
+      loadGraphic(ImgDoors, true, true, 36, 48);
+      offset.x = 10;
+      width = 16;
     }
   }
 }
