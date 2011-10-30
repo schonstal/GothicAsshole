@@ -17,6 +17,8 @@ package
 
     public var dead:Boolean = false;
 
+    public var dieCallback:Function;
+
     private var _bloodStr:String = "";
     private var _dirStr:String = "";
     private var _jumpControl:Boolean = false;
@@ -146,6 +148,9 @@ package
         velocity.x = 0;
         acceleration.x = 0;
         angularVelocity = 1000;
+        height = 14;
+        if(grounded)
+          die();
       }
 
       if(!dead) {
@@ -166,6 +171,9 @@ package
     }
 
     public function die():void {
+      if(dieCallback != null) {
+        dieCallback();
+      }
       dead = true;
       acceleration.y = 0;
       velocity.y = 5;

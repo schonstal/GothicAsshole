@@ -73,6 +73,10 @@ package
       add(spikes);
 
       player = new Player(FlxG.camera.width/2,15);
+      player.dieCallback = function():void { 
+          var gog:GameOverGroup = new GameOverGroup();
+          add(gog);
+      }
       add(player);
 
       var enemy:EnemySprite;
@@ -154,8 +158,6 @@ package
 
       FlxG.overlap(player, spikes, function(player:Player, spike:SpikeSprite):void {
         if(!player.dead) {
-          var gog:GameOverGroup = new GameOverGroup();
-          add(gog);
           _sword = new SwordSprite(player);
           add(_sword);
           player.die();

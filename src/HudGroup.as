@@ -10,7 +10,7 @@ package
     private var _scoreSprite:FlxSprite;
     private var _levelSprite:FlxSprite;
 
-    public static const TEXT_COLOR:uint = 0xffffff00;
+    public static const TEXT_COLOR:uint = 0xfffff829;
     public static const SHADOW_COLOR:uint = 0xff000000;
 
     public function HudGroup():void {
