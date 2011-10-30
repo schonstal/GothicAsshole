@@ -112,9 +112,11 @@ package
     }
 
     override public function update():void {
-      if(FlxG.collide(player, ground) || FlxG.collide(player, _brick)) {
+      if(FlxG.collide(player, ground) || FlxG.collide(player, _brick) && !player.enterDoor) {
         if(FlxG.overlap(player, door) && _won && GameTracker.transitionSprite.done) {
           FlxG.level++;
+          player.x = door.x + (door.width-player.width)/2;
+          player.enterDoor = true;
           GameTracker.transitionSprite.create();
         }
         player.grounded = true;

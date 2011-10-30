@@ -13,16 +13,24 @@ package
     public var killed:Boolean = false;
     public var grounded:Boolean = false;
     public var bloody:Boolean = false;
+    public var enterDoor:Boolean = false;
 
     private var _bloodStr:String = "";
+    private var _dirStr:String = "";
     private var _jumpControl:Boolean = false;
     private var _jumpPressed:Boolean = false;
+    private var _canMove:Boolean = false;
+    private var _started:Boolean = false;
 
     private var _beforeJumpTimer:Number = 0;
     private var _beforeJumpThreshold:Number = 0.15;
 
     private var _afterJumpTimer:Number = 0;
     private var _afterJumpThreshold:Number = 0.15;
+
+    private var _looking:uint = RIGHT;
+
+    public static const DOOR_FADE_TIME:Number = 1.0;
 
     public function Player(X:Number,Y:Number):void {
       super(X,Y);
@@ -40,11 +48,15 @@ package
       addAnimation("normal", [0]);
       addAnimation("bloody", [1]);
 
-      addAnimation("standing", [0], 5);
-      addAnimation("standing_bloody", [0], 5);
+      addAnimation("standing_left", [8]);
+      addAnimation("standing_bloody_left", [11]);
+      addAnimation("standing_right", [2]);
+      addAnimation("standing_bloody_right", [5]);
 
-      addAnimation("walking", [2,0], 5);
-      addAnimation("walking_bloody", [1,0], 5);
+      addAnimation("walking_left", [9,8,10,8], 10);
+      addAnimation("walking_bloody_left", [12,11,13,11], 10);
+      addAnimation("walking_right", [3,2,4,2], 10);
+      addAnimation("walking_bloody_right", [6,5,7,5], 10);
 
       addAnimation("stab_charge_bloody", [0], 10);
       addAnimation("stab_charge", [0], 10);
@@ -52,7 +64,7 @@ package
       addAnimation("stab_bloody", [0], 10);
       addAnimation("stab", [0], 10);
 
-      addAnimation("door", [1,0], 30);
+      addAnimation("door", [14,15], 5);
 
       acceleration.y = _gravity;
 
@@ -61,19 +73,32 @@ package
     }
 
     override public function update():void {
-      _bloodStr = (bloody ? "" : "_bloody");
+      _bloodStr = (bloody ? "_bloody" : "");
+      _dirStr = (_looking == LEFT ? "_left" : "_right");
+
+      if(!_started && GameTracker.transitionSprite.done) {
+        _started = _canMove = true;
+      }
 
       if(grounded) {
         maxVelocity.x = 200;
         drag.x = 400;
-        if(Math.abs(velocity.x) > 0) {
-          play("walking" + _bloodStr);
+        if(enterDoor) {
+          _canMove = false;
+          velocity.x = 0;
+          alpha -= FlxG.elapsed / DOOR_FADE_TIME;
+          play("door");
         } else {
-          play("standing" + _bloodStr);
+          if(Math.abs(velocity.x) > 0) {
+            play("walking" + _bloodStr + _dirStr);
+          } else {
+            play("standing" + _bloodStr + _dirStr);
+          }
         }
       } else {
         maxVelocity.x = 400;
         drag.x = 0;
+        play((bloody?"bloody":"normal"));
       }
 
       if(FlxG.keys.justPressed("W") || FlxG.keys.justPressed("UP")) {
@@ -85,7 +110,6 @@ package
         if(grounded) {
           _jumpControl = true;
           velocity.y = -150;
-          play((bloody?"bloody":"normal"));
         }
       }
 
@@ -97,10 +121,12 @@ package
       }
       
       if(!killed) {
-        if(FlxG.keys.A || FlxG.keys.LEFT && GameTracker.transitionSprite.done) {
+        if(FlxG.keys.A || FlxG.keys.LEFT && _canMove) {
+          _looking = LEFT;
           acceleration.x = -_speed.x * (velocity.x > 0 ? 4 : 1);
-        } else if(FlxG.keys.D || FlxG.keys.RIGHT && GameTracker.transitionSprite.done) {
+        } else if(FlxG.keys.D || FlxG.keys.RIGHT && _canMove) {
           acceleration.x = _speed.x * (velocity.x < 0 ? 4 : 1);
+          _looking = RIGHT;
         } else if (Math.abs(velocity.x) < 50) {
           velocity.x = 0;
           acceleration.x = 0;

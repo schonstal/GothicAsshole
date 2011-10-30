@@ -16,7 +16,7 @@ package
     }
 
     public function create():void {
-      x = -1000;
+      x = -1300;
       _hasTransitioned = false;
     }
 
