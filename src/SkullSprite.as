@@ -13,6 +13,10 @@ package
     private var _wakeUpTimer:Number = 0;
     private var _wakeUpThreshold:Number = 0.3;
 
+    private var sinAmt:Number = 0;
+    private var sinOffset:Number = 0;
+    private var sinMod:Number = 0;
+
     public function SkullSprite(X:Number, Y:Number):void {
       super(X,Y);
       loadGraphic(ImgSkulls, true, true, 19, 23);
@@ -32,12 +36,19 @@ package
     }
 
     override public function update():void {
-      if(waking)
-        _wakeUpTimer += FlxG.elapsed;
+      if(waking) {
+          _wakeUpTimer += FlxG.elapsed;
 
-      if(_wakeUpTimer > _wakeUpThreshold) {
-        awake = true;
+        if(_wakeUpTimer > _wakeUpThreshold) {
+          awake = true;
+          waking = false;
+        }
       }
+
+      if(velocity.x > 0)
+        facing = RIGHT;
+      else
+        facing = LEFT;
 
       if(moveCallback != null && awake)
         moveCallback();
@@ -45,6 +56,10 @@ package
       if(awake) {
         play("awake");
       } else {
+        sinAmt += FlxG.elapsed;
+        sinOffset = Math.sin(sinAmt+sinMod)*30;
+        velocity.x = sinOffset;
+        velocity.y = 0;
         play("sleeping");
       }
       super.update();

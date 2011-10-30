@@ -112,6 +112,10 @@ package
         player.die();
         spike.play("bloody");
 
+        for each(var skull:SkullSprite in _skulls.members) {
+          skull.awake = false;
+        }
+
         var emitter:FlxEmitter = new FlxEmitter();
         //Use recycling here later, this might get pretty slow
         for(var i:int = 0; i < 50; i++) {
