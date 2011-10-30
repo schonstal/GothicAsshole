@@ -69,9 +69,9 @@ package
       }
       
       if(!killed) {
-        if(FlxG.keys.A) {
+        if(FlxG.keys.A || FlxG.keys.LEFT) {
           acceleration.x = -_speed.x * (velocity.x > 0 ? 4 : 1);
-        } else if(FlxG.keys.D) {
+        } else if(FlxG.keys.D || FlxG.keys.RIGHT) {
           acceleration.x = _speed.x * (velocity.x < 0 ? 4 : 1);
         } else if (Math.abs(velocity.x) < 50) {
           velocity.x = 0;
@@ -85,7 +85,7 @@ package
         angularVelocity = 1000;
       }
 
-      if(!(FlxG.keys.W || FlxG.keys.SPACE || FlxG.keys.UP) && velocity.y < 0)
+      if(!(FlxG.keys.W || FlxG.keys.UP) && velocity.y < 0)
         acceleration.y = _gravity * 2;
       else
         acceleration.y = _gravity;
