@@ -11,7 +11,7 @@ package
     public function TransitionSprite():void {
       super(-1000,0);
 //      loadGraphic(ImgTransition, true, true, 1000, 600);
-      makeGraphic(1000,600,0xffff00ff);
+      makeGraphic(1000,600,0xff000000);
       velocity.x = 600;
     }
 
