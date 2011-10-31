@@ -164,7 +164,7 @@ package
       });
 
       FlxG.overlap(player, spikes, function(player:Player, spike:SpikeSprite):void {
-        if(!player.dead) {
+        if(!player.dead && !_won) {
           _sword = new SwordSprite(player);
           add(_sword);
           player.die();

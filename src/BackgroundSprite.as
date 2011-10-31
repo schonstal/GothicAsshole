@@ -4,13 +4,11 @@ package
 
   public class BackgroundSprite extends FlxSprite
   {
-    //[Embed(source='../data/spike.png')] private var ImgGibs:Class;
+    [Embed(source='../data/background.png')] private var ImgGibs:Class;
     public function BackgroundSprite():void {
       super(0,0);
-//      loadGraphic(ImgGibs, true, true, WIDTH, HEIGHT);
+      loadGraphic(ImgGibs, true, true, 800, 600);
       antialiasing = false;
-
-      makeGraphic(FlxG.width,FlxG.height,0xff333333);
     }
   }
 }
