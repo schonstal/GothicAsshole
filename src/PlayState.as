@@ -6,6 +6,7 @@ package
   public class PlayState extends FlxState
   {
     [Embed(source='../data/music.swf', symbol='castlestep.wav')] private var CastleStep:Class;
+//    [Embed(source='../data/sounds.swf', symbol='kill2.wav')] private var KillSound:Class;
 
     public var player:Player;
 
@@ -164,7 +165,7 @@ package
       });
 
       FlxG.overlap(player, spikes, function(player:Player, spike:SpikeSprite):void {
-        if(!player.dead) {
+        if(!player.dead && !_won) {
           _sword = new SwordSprite(player);
           add(_sword);
           player.die();
@@ -210,6 +211,7 @@ package
 
       FlxG.overlap(player, enemies, function(player:Player, enemy:EnemySprite):void {
         if(enemy.touching|FlxObject.UP && player.velocity.y > 0 && !player.killed) {
+        //  FlxG.play(KillSound);
           player.bounce();
           player.play("bloody");
           killEnemy(enemy);    

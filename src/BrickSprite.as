@@ -10,6 +10,7 @@ package
       super(FlxG.camera.width/2-20,53);
 //      loadGraphic(ImgBrick, true, true, 15, 15);
       makeGraphic(40,16,0xffff00ff);
+      visible = false;
       antialiasing = false;
       allowCollisions = UP;
       immovable = true;
