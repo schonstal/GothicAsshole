@@ -41,7 +41,6 @@ package
       
       width = 22;
       height = 30;
-      offset.x = 10;
 
       if(x > FlxG.camera.width / 2) {
         velocity.x = SPEED * -1;
@@ -50,6 +49,9 @@ package
         velocity.x = SPEED;
         facing = RIGHT;
       }
+
+      offset.x = (facing == RIGHT ? 10 : 0);
+
     }
   }
 }

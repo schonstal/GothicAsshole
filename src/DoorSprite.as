@@ -7,10 +7,10 @@ package
   {
     [Embed(source='../data/entranceExit.png')] private var ImgDoors:Class;
     public function DoorSprite():void {
-      super(FlxG.camera.width/2-13,FlxG.camera.height-48);
+      super(FlxG.camera.width/2,FlxG.camera.height-48);
       loadGraphic(ImgDoors, true, true, 36, 48);
-      offset.x = 10;
-      width = 16;
+      offset.x = 16;
+      width = 4;
     }
   }
 }

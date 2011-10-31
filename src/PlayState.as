@@ -20,6 +20,8 @@ package
     private var _emitters:FlxGroup;
     private var arrow:ArrowSprite;
 
+    private var _sword:SwordSprite;
+
     private var _skulls:FlxGroup; 
     private var _skullFlames:FlxGroup; 
     private var _ghosts:FlxGroup;
@@ -58,12 +60,24 @@ package
       _brick = new BrickSprite();
       add(_brick);
 
-      player = new Player(FlxG.camera.width/2,15);
-      add(player);
-
       ground = new FlxObject(-50, FlxG.camera.height, FlxG.camera.width+100, 100);
       ground.immovable = true;
       add(ground);
+
+      var spike:SpikeSprite;
+      spikes = new FlxGroup();
+      for(i = 0; i < FlxG.camera.width/SpikeSprite.WIDTH; i++) {
+        spike = new SpikeSprite(20*i, FlxG.camera.height - SpikeSprite.HEIGHT + Math.random()*SPIKE_VARIANCE);
+        spikes.add(spike);
+      }
+      add(spikes);
+
+      player = new Player(FlxG.camera.width/2,15);
+      player.dieCallback = function():void { 
+          var gog:GameOverGroup = new GameOverGroup();
+          add(gog);
+      }
+      add(player);
 
       var enemy:EnemySprite;
       enemies = new FlxGroup();
@@ -84,14 +98,6 @@ package
       }
       add(_skulls);
 
-      var spike:SpikeSprite;
-      spikes = new FlxGroup();
-      for(i = 0; i < FlxG.camera.width/SpikeSprite.WIDTH; i++) {
-        spike = new SpikeSprite(20*i, FlxG.camera.height - SpikeSprite.HEIGHT + Math.random()*SPIKE_VARIANCE);
-        spikes.add(spike);
-      }
-      add(spikes);
-
       _emitters = new FlxGroup();
       add(_emitters);
 
@@ -108,6 +114,8 @@ package
       add(arrow);
 
       add(GameTracker.transitionSprite);
+
+      //VISUAL DEBUG?
 //      FlxG.visualDebug = true;
     }
 
@@ -119,9 +127,18 @@ package
           player.enterDoor = true;
           GameTracker.transitionSprite.create();
         }
+        player.hasTouchedBrick = true;
         player.grounded = true;
       } else {
         player.grounded = false;
+      }
+
+      if(!player.grounded && player.hasTouchedBrick) {
+        _brick.allowCollisions = 0;
+      }
+
+      if(_sword != null && FlxG.collide(ground, _sword)) {
+        _sword.rest();
       }
 
       FlxG.overlap(player, _skulls, function(player:Player, skull:SkullSprite):void {
@@ -147,30 +164,33 @@ package
       });
 
       FlxG.overlap(player, spikes, function(player:Player, spike:SpikeSprite):void {
-        var gog:GameOverGroup = new GameOverGroup();
-        add(gog);
-        player.die();
-        spike.play("bloody");
+        if(!player.dead) {
+          _sword = new SwordSprite(player);
+          add(_sword);
+          player.die();
 
-        for each(var skull:SkullSprite in _skulls.members) {
-          skull.awake = false;
-        }
+          spike.play("bloody");
 
-        var emitter:FlxEmitter = new FlxEmitter();
-        //Use recycling here later, this might get pretty slow
-        for(var i:int = 0; i < 50; i++) {
-          var p:GibParticle = new GibParticle();
-          p.trailCallback = trailCallbackGenerator();
-          emitter.add(p);
+          for each(var skull:SkullSprite in _skulls.members) {
+            skull.awake = false;
+          }
+
+          var emitter:FlxEmitter = new FlxEmitter();
+          //Use recycling here later, this might get pretty slow
+          for(var i:int = 0; i < 50; i++) {
+            var p:GibParticle = new GibParticle();
+            p.trailCallback = trailCallbackGenerator();
+            emitter.add(p);
+          }
+          emitter.bounce = 0.5;
+          emitter.particleDrag = new FlxPoint(30, 0.2);
+          emitter.gravity = GRAVITY;
+          emitter.at(player);
+          _emitters.add(emitter);
+          emitter.start();
+          emitter.setYSpeed(-400, -100);
+          emitter.setXSpeed(-100, 100);
         }
-        emitter.bounce = 0.5;
-        emitter.particleDrag = new FlxPoint(30, 0.2);
-        emitter.gravity = GRAVITY;
-        emitter.at(player);
-        _emitters.add(emitter);
-        emitter.start();
-        emitter.setYSpeed(-400, -100);
-        emitter.setXSpeed(-100, 100);
       });
 
       FlxG.overlap(_emitters, spikes, function(emitter:GibParticle, spike:SpikeSprite):void {
@@ -181,26 +201,19 @@ package
 
       FlxG.collide(_emitters, ground);
 
+      if(_sword != null) {
+        FlxG.overlap(_sword, enemies, function(sword:SwordSprite, enemy:EnemySprite):void {
+          killEnemy(enemy, false);
+          sword.play("bloody");
+        });
+      }
+
       FlxG.overlap(player, enemies, function(player:Player, enemy:EnemySprite):void {
         if(enemy.touching|FlxObject.UP && player.velocity.y > 0 && !player.killed) {
-          enemy.exists = false;
           player.bounce();
           player.play("bloody");
-          
+          killEnemy(enemy);    
           _droplets += 5;
-          var emitter:FlxEmitter = new FlxEmitter();
-          //Use recycling here later, this might get pretty slow
-          for(var i:int = 0; i < 5; i++) {
-            var p:GibParticle = new GibParticle();
-            p.trailCallback = trailCallbackGenerator();
-            p.follow(player);
-            emitter.add(p);
-          }
-          emitter.gravity = GRAVITY;
-          emitter.at(enemy);
-          _emitters.add(emitter);
-          emitter.start();
-          emitter.setYSpeed(-300, -200);
         }
       });
 
@@ -208,6 +221,25 @@ package
         win();
 
       super.update();
+    }
+
+    private function killEnemy(enemy:EnemySprite, follow:Boolean = true):void {
+      enemy.exists = false;
+      var emitter:FlxEmitter = new FlxEmitter();
+      //Use recycling here later, this might get pretty slow
+      for(var i:int = 0; i < 5; i++) {
+        var p:GibParticle = new GibParticle();
+        p.trailCallback = trailCallbackGenerator();
+        if(follow)
+          p.follow(player);
+        emitter.add(p);
+      }
+      emitter.particleDrag = new FlxPoint(30, 0.2);
+      emitter.gravity = GRAVITY;
+      emitter.at(enemy);
+      _emitters.add(emitter);
+      emitter.start();
+      emitter.setYSpeed(-300, -200);
     }
 
     public function win():void {

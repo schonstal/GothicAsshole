@@ -15,6 +15,12 @@ package
     public var bloody:Boolean = false;
     public var enterDoor:Boolean = false;
 
+    public var dead:Boolean = false;
+
+    public var dieCallback:Function;
+
+    public var hasTouchedBrick:Boolean = false;
+
     private var _bloodStr:String = "";
     private var _dirStr:String = "";
     private var _jumpControl:Boolean = false;
@@ -66,6 +72,8 @@ package
 
       addAnimation("door", [14,15], 5);
 
+      addAnimation("dead", [16]);
+
       acceleration.y = _gravity;
 
       maxVelocity.y = 800;
@@ -80,25 +88,30 @@ package
         _started = _canMove = true;
       }
 
-      if(grounded) {
-        maxVelocity.x = 200;
-        drag.x = 400;
-        if(enterDoor) {
-          _canMove = false;
-          velocity.x = 0;
-          alpha -= FlxG.elapsed / DOOR_FADE_TIME;
-          play("door");
-        } else {
-          if(Math.abs(velocity.x) > 0) {
-            play("walking" + _bloodStr + _dirStr);
-          } else {
-            play("standing" + _bloodStr + _dirStr);
-          }
-        }
+      if(dead) {
+        _canMove = false;
+        play("dead");
       } else {
-        maxVelocity.x = 400;
-        drag.x = 0;
-        play((bloody?"bloody":"normal"));
+        if(grounded) {
+          maxVelocity.x = 200;
+          drag.x = 400;
+          if(enterDoor) {
+            _canMove = false;
+            velocity.x = 0;
+            alpha -= FlxG.elapsed / DOOR_FADE_TIME;
+            play("door");
+          } else {
+            if(Math.abs(velocity.x) > 0) {
+              play("walking" + _bloodStr + _dirStr);
+            } else {
+              play("standing" + _bloodStr + _dirStr);
+            }
+          }
+        } else {
+          maxVelocity.x = 400;
+          drag.x = 0;
+          play((bloody?"bloody":"normal"));
+        }
       }
 
       if(FlxG.keys.justPressed("W") || FlxG.keys.justPressed("UP")) {
@@ -107,7 +120,7 @@ package
         if(_afterJumpTimer < _afterJumpThreshold) {
           _jumpControl = true;
         }
-        if(grounded) {
+        if(grounded && !dead && !enterDoor) {
           _jumpControl = true;
           velocity.y = -150;
         }
@@ -120,11 +133,11 @@ package
         _jumpPressed = false;
       }
       
-      if(!killed) {
-        if(FlxG.keys.A || FlxG.keys.LEFT && _canMove) {
+      if(!killed && !dead) {
+        if((FlxG.keys.A || FlxG.keys.LEFT) && _canMove) {
           _looking = LEFT;
           acceleration.x = -_speed.x * (velocity.x > 0 ? 4 : 1);
-        } else if(FlxG.keys.D || FlxG.keys.RIGHT && _canMove) {
+        } else if((FlxG.keys.D || FlxG.keys.RIGHT) && _canMove) {
           acceleration.x = _speed.x * (velocity.x < 0 ? 4 : 1);
           _looking = RIGHT;
         } else if (Math.abs(velocity.x) < 50) {
@@ -133,16 +146,21 @@ package
         } else {
           acceleration.x = 0;
         }
-      } else {
+      } else if(!dead){
         velocity.x = 0;
         acceleration.x = 0;
         angularVelocity = 1000;
+        height = 14;
+        if(grounded)
+          die();
       }
 
-      if(!((FlxG.keys.W || FlxG.keys.UP) && _jumpControl) && velocity.y < 0)
-        acceleration.y = _gravity * 2;
-      else
-        acceleration.y = _gravity;
+      if(!dead) {
+        if(!((FlxG.keys.W || FlxG.keys.UP) && _jumpControl) && velocity.y < 0)
+          acceleration.y = _gravity * 2;
+        else
+          acceleration.y = _gravity;
+      }
 
       
       if(x < -width) {
@@ -155,7 +173,17 @@ package
     }
 
     public function die():void {
-      exists = false;
+      if(dieCallback != null) {
+        dieCallback();
+      }
+      dead = true;
+      acceleration.y = 0;
+      velocity.y = 5;
+      acceleration.x = 0;
+      velocity.x = 0;
+      _canMove = false;
+      angularVelocity = 0;
+      angle = 0;
       FlxG.shake(0.005, 0.2);
       FlxG.level = 1;
     }
